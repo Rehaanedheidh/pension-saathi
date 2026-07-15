@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pension Saathi — APY Pension Planner</title>
+<meta name="description" content="A lifelong government pension for every worker — from as little as ₹42 a month. Plan your Atal Pension Yojana contribution.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+:root{
+  --paper:#FBF6EC; --ink:#1E2A4A; --ink-soft:#4A5578;
+  --marigold:#F2A413; --marigold-deep:#D98A00;
+  --leaf:#1E8E5A; --leaf-soft:#E3F3EA;
+  --card:#FFFFFF; --line:#EADFC8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Baloo 2',system-ui,sans-serif;background:var(--paper);color:var(--ink);
+  min-height:100vh;padding:0 0 48px}
+.wrap{max-width:520px;margin:0 auto;padding:0 16px}
+.hdr{background:var(--ink);color:#FFF;padding:20px 0 26px;border-bottom:6px solid var(--marigold)}
+.hdr .wrap{display:flex;flex-direction:column;gap:6px}
+.hdr-top{display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:26px;font-weight:800;letter-spacing:.2px}
+.brand .dot{color:var(--marigold)}
+.lang{background:transparent;border:2px solid rgba(255,255,255,.4);color:#FFF;border-radius:999px;
+  padding:5px 14px;font-family:inherit;font-weight:600;font-size:14px;cursor:pointer}
+.lang:focus-visible{outline:3px solid var(--marigold);outline-offset:2px}
+.tagline{font-size:15px;color:#D8DEF0;max-width:40ch;line-height:1.45}
+.modes{display:flex;gap:8px;margin:18px 0 4px}
+.mode{flex:1;border:2px solid var(--line);background:var(--card);border-radius:14px;
+  padding:12px 8px;font-family:inherit;font-weight:700;font-size:15px;color:var(--ink-soft);cursor:pointer}
+.mode.on{border-color:var(--marigold);background:#FFF6E3;color:var(--ink)}
+.mode:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;margin-top:14px}
+.lbl{font-weight:700;font-size:15px;display:block;margin-bottom:8px}
+.bigval{font-size:22px;font-weight:800;color:var(--marigold-deep);margin-left:8px}
+input[type=range]{width:100%;accent-color:var(--marigold);height:32px}
+input[type=range]:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.slabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.slab{flex:1;min-width:80px;border:2px solid var(--line);background:#FFF;border-radius:12px;
+  padding:10px 4px;font-family:inherit;font-weight:800;font-size:16px;color:var(--ink-soft);cursor:pointer}
+.slab.on{border-color:var(--leaf);background:var(--leaf-soft);color:var(--leaf)}
+.slab:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.result{background:var(--ink);color:#FFF;border:none}
+.result h2{font-size:16px;font-weight:700;color:var(--marigold);text-transform:uppercase;letter-spacing:.8px}
+.pay{font-size:44px;font-weight:800;line-height:1.1;margin-top:6px}
+.pay small{font-size:16px;font-weight:600;color:#C9D2EC}
+.paysub{font-size:14px;color:#C9D2EC;font-weight:600}
+.chai{display:flex;align-items:center;gap:10px;margin-top:12px;background:rgba(255,255,255,.08);
+  border-radius:12px;padding:10px 12px}
+.cups{font-size:24px;letter-spacing:2px}
+.chai p{font-size:14px;font-weight:600;color:#EBD9AE}
+.get{margin-top:16px;border-top:1px solid rgba(255,255,255,.18);padding-top:14px}
+.get .g1{font-size:14px;color:#C9D2EC;font-weight:600}
+.get .g2{font-size:34px;font-weight:800;color:#7ADFA9}
+.get .g3{font-size:14px;color:#C9D2EC}
+.note{font-size:13.5px;color:#C9D2EC;margin-top:10px;line-height:1.5}
+.note b{color:#FFF}
+.bars{margin-top:12px}
+.bar-row{margin-top:12px}
+.bar-lbl{display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-bottom:4px}
+.bar-lbl span:last-child{color:var(--ink-soft);font-weight:600}
+.track{background:#F1E9D6;border-radius:8px;height:26px;overflow:hidden}
+.fill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:10px;
+  color:#FFF;font-size:13px;font-weight:700;min-width:52px}
+.fill.in{background:var(--ink-soft)}
+.fill.out{background:var(--leaf)}
+.mult{margin-top:12px;font-weight:700;color:var(--leaf);font-size:15px}
+.cmp{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.cmp-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  border:1.5px solid var(--line);border-radius:12px;padding:10px 12px}
+.cmp-row.win{border-color:var(--leaf);background:var(--leaf-soft)}
+.cmp-name{font-weight:700;font-size:15px}
+.cmp-sub{font-size:12.5px;color:var(--ink-soft);font-weight:500}
+.cmp-val{font-weight:800;font-size:17px;white-space:nowrap}
+.cmp-row.win .cmp-val{color:var(--leaf)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:9px 0;font-size:15px;font-weight:600;cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--leaf);flex-shrink:0;margin-top:1px}
+.verdict{margin-top:10px;border-radius:12px;padding:12px 14px;font-weight:700;font-size:15px}
+.verdict.yes{background:var(--leaf-soft);color:var(--leaf)}
+.verdict.no{background:#FDEDE4;color:#B4531F}
+ol.steps{margin:10px 0 0 20px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;font-weight:500}
+.fineprint{font-size:12px;color:var(--ink-soft);line-height:1.55;margin-top:18px;text-align:center}
+.hidden{display:none}
+@media (prefers-reduced-motion:no-preference){ .fill{transition:width .5s ease} }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="wrap">
+    <div class="hdr-top">
+      <div class="brand" id="brand">Pension Saathi<span class="dot">.</span></div>
+      <button class="lang" id="langBtn">हिंदी</button>
+    </div>
+    <p class="tagline" id="tagline"></p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="modes" role="tablist">
+    <button class="mode on" id="modeGoal" role="tab">🎯 <span></span></button>
+    <button class="mode" id="modeBudget" role="tab">🪙 <span></span></button>
+  </div>
+
+  <div class="card">
+    <label class="lbl" for="age"><span id="ageLbl"></span><span class="bigval" id="ageVal"></span></label>
+    <input id="age" type="range" min="18" max="40" value="25">
+
+    <div id="goalInputs">
+      <span class="lbl" style="margin-top:16px" id="slabLbl"></span>
+      <div class="slabs" id="slabBtns"></div>
+    </div>
+
+    <div id="budgetInputs" class="hidden">
+      <label class="lbl" for="daily" style="margin-top:16px"><span id="dailyLbl"></span><span class="bigval" id="dailyVal"></span></label>
+      <input id="daily" type="range" min="2" max="50" value="10">
+      <p style="font-size:14px;font-weight:600;color:var(--ink-soft);margin-top:8px" id="budgetMsg"></p>
+    </div>
+  </div>
+
+  <div id="resultBlock">
+    <div class="card result">
+      <h2 id="resultTitle"></h2>
+      <div class="pay"><span id="payVal"></span> <small id="perMonth"></small></div>
+      <p class="paysub" id="till60"></p>
+      <div class="chai">
+        <span class="cups" id="cups" aria-hidden="true"></span>
+        <p id="chaiLine"></p>
+      </div>
+      <div class="get">
+        <p class="g1" id="youGet"></p>
+        <div class="g2" id="slabVal"></div>
+        <p class="g3" id="pensionForLife"></p>
+        <p class="note" id="familyNote"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="lbl" id="payoffTitle"></span>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-lbl"><span id="totalInLbl"></span><span id="overLbl"></span></div>
+          <div class="track"><div class="fill in" id="barIn"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-lbl"><span id="totalOutLbl"></span><span id="plusCorpus"></span></div>
+          <div class="track"><div class="fill out" id="barOut"></div></div>
+        </div>
+      </div>
+      <p class="mult" id="multLine"></p>
+    </div>
+
+    <div class="card">
+      <span class="lbl" id="compareTitle"></span>
+      <div class="cmp">
+        <div class="cmp-row">
+          <div><div class="cmp-name" id="mattressName"></div><div class="cmp-sub" id="mattressNote"></div></div>
+          <div class="cmp-val" id="mattressVal"></div>
+        </div>
+        <div class="cmp-row">
+          <div><div class="cmp-name" id="bankName"></div><div class="cmp-sub" id="bankNote"></div></div>
+          <div class="cmp-val" id="bankVal"></div>
+        </div>
+        <div class="cmp-row win">
+          <div><div class="cmp-name" id="apyName"></div><div class="cmp-sub" id="apyNote"></div></div>
+          <div class="cmp-val" id="apyVal"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="lbl" id="eligTitle"></span>
+    <p style="font-size:13.5px;color:var(--ink-soft);font-weight:600;margin-bottom:4px" id="eligIntro"></p>
+    <div id="checks"></div>
+    <div class="verdict no" id="verdict"></div>
+    <ol class="steps hidden" id="steps"></ol>
+  </div>
+
+  <p class="fineprint" id="disclaimer"></p>
+</div>
+
+<script>
+/* APY official contribution chart (PFRDA): monthly contribution by entry age */
+const APY = {
+  18:[42,84,126,168,210],19:[46,92,138,183,228],20:[50,100,150,198,248],
+  21:[54,108,162,215,269],22:[59,117,177,234,292],23:[64,127,192,254,318],
+  24:[70,139,208,277,346],25:[76,151,226,301,376],26:[82,164,246,327,409],
+  27:[90,178,268,356,446],28:[97,194,292,388,485],29:[106,212,318,423,529],
+  30:[116,231,347,462,577],31:[126,252,379,504,630],32:[138,276,414,551,689],
+  33:[151,302,453,602,752],34:[165,330,495,659,824],35:[181,362,543,722,902],
+  36:[198,396,594,792,990],37:[218,436,654,870,1087],38:[240,480,720,957,1196],
+  39:[264,528,792,1054,1318],40:[291,582,873,1164,1454]
+};
+const SLABS=[1000,2000,3000,4000,5000];
+const CORPUS=[170000,340000,510000,680000,850000];
+const CHAI=10;
+
+const T={
+en:{tagline:"A lifelong pension for every worker — from as little as ₹42 a month.",
+ modeGoal:"I want a pension",modeBudget:"I can save daily",
+ yourAge:"Your age today",pensionGoal:"Monthly pension you want after 60",
+ dailySave:"How much can you set aside per day?",
+ perMonth:"per month",perDay:"per day",years:"years",
+ resultTitle:"Your plan",till60:(y)=>`every month until you turn 60 (${y} years)`,
+ thatsOnly:"That's only",chaiLine:(n)=>`≈ ${n} cup${n>1?"s":""} of chai a day`,
+ youGet:"You get, guaranteed by the Government of India:",
+ pensionForLife:"every month, for life, after 60",
+ familyNote:(c)=>`If something happens to you, your spouse gets the same pension for life.<br>After you both, your family receives <b>${c}</b> as a lump sum.`,
+ payoffTitle:"What you put in vs. what comes back",
+ totalIn:"Total you contribute",over:(y)=>`over ${y} years`,
+ totalOut:"Pension received by age 80",plusCorpus:"+ family lump sum",
+ timesBack:(x)=>`✦ That's about ${x}× back — guaranteed, not market luck.`,
+ compareTitle:"Same savings, three futures",
+ mattress:"🛏️ Cash kept at home",bank:"🏦 Savings account (~3.5%)",apy:"🇮🇳 APY pension",
+ mattressNote:"loses value to rising prices",bankNote:"grows a little",
+ apyNote:"pension for life + lump sum for family",
+ budgetResult:(d)=>`Saving ₹${d} a day (₹${d*30}/month), the best pension you can lock in:`,
+ budgetNone:"At this age, this amount can't reach the ₹1,000 slab. Try a slightly higher daily amount.",
+ eligTitle:"Can you join?",eligIntro:"Tick what's true for you:",
+ checks:["I am 18–40 years old","I have a bank or post-office savings account",
+  "I have Aadhaar linked to my account","I do not pay income tax"],
+ eligibleYes:"✅ You can join APY! Here's how:",
+ eligibleNo:"ℹ️ You may not qualify yet — the unticked items above are what's needed.",
+ steps:["Go to your bank branch, post office, or bank app",
+  "Ask for the Atal Pension Yojana (APY) form",
+  "Choose your pension amount (₹1,000–₹5,000)",
+  "Money auto-deducts monthly — just keep balance in the account"],
+ disclaimer:"Estimates based on the official APY contribution chart. Pension is guaranteed by the Government of India under Atal Pension Yojana. Confirm current rules at your bank.",
+ lang:"हिंदी"},
+hi:{tagline:"हर मेहनतकश के लिए जीवन भर की पेंशन — सिर्फ ₹42 महीने से शुरू।",
+ modeGoal:"मुझे पेंशन चाहिए",modeBudget:"मैं रोज़ बचा सकता/सकती हूँ",
+ yourAge:"आपकी उम्र आज",pensionGoal:"60 के बाद हर महीने कितनी पेंशन चाहिए",
+ dailySave:"आप रोज़ कितना बचा सकते हैं?",
+ perMonth:"हर महीने",perDay:"हर दिन",years:"साल",
+ resultTitle:"आपका प्लान",till60:(y)=>`हर महीने, 60 की उम्र तक (${y} साल)`,
+ thatsOnly:"यानी सिर्फ",chaiLine:(n)=>`≈ रोज़ ${n} कप चाय जितना`,
+ youGet:"भारत सरकार की गारंटी से आपको मिलेगा:",
+ pensionForLife:"हर महीने, जीवन भर, 60 के बाद",
+ familyNote:(c)=>`आपके बाद आपके जीवनसाथी को वही पेंशन जीवन भर मिलती रहेगी।<br>आप दोनों के बाद परिवार को <b>${c}</b> एकमुश्त मिलेगा।`,
+ payoffTitle:"आप कितना देंगे बनाम कितना वापस मिलेगा",
+ totalIn:"कुल जमा",over:(y)=>`${y} साल में`,
+ totalOut:"80 की उम्र तक कुल पेंशन",plusCorpus:"+ परिवार को एकमुश्त",
+ timesBack:(x)=>`✦ यानी करीब ${x} गुना वापस — गारंटी के साथ, बाज़ार के भरोसे नहीं।`,
+ compareTitle:"वही बचत, तीन अलग नतीजे",
+ mattress:"🛏️ घर में रखा कैश",bank:"🏦 बचत खाता (~3.5%)",apy:"🇮🇳 APY पेंशन",
+ mattressNote:"महंगाई में घटता है",bankNote:"थोड़ा बढ़ता है",
+ apyNote:"जीवन भर पेंशन + परिवार को एकमुश्त",
+ budgetResult:(d)=>`रोज़ ₹${d} (₹${d*30}/महीना) बचाकर, आप यह पेंशन पक्की कर सकते हैं:`,
+ budgetNone:"इस उम्र में इतनी छोटी रकम से ₹1,000 वाला स्लैब नहीं मिलेगा। थोड़ी ज़्यादा रोज़ाना रकम आज़माएँ।",
+ eligTitle:"क्या आप जुड़ सकते हैं?",eligIntro:"जो सही है उस पर टिक करें:",
+ checks:["मेरी उम्र 18–40 साल है","मेरा बैंक या डाकघर बचत खाता है",
+  "मेरे खाते से आधार जुड़ा है","मैं इनकम टैक्स नहीं देता/देती"],
+ eligibleYes:"✅ आप APY से जुड़ सकते हैं! तरीका:",
+ eligibleNo:"ℹ️ अभी शायद पात्र नहीं — ऊपर बिना टिक वाली चीज़ें ज़रूरी हैं।",
+ steps:["अपनी बैंक शाखा, डाकघर या बैंक ऐप पर जाएँ",
+  "अटल पेंशन योजना (APY) का फ़ॉर्म माँगें",
+  "अपनी पेंशन राशि चुनें (₹1,000–₹5,000)",
+  "पैसा हर महीने अपने आप कटेगा — बस खाते में बैलेंस रखें"],
+ disclaimer:"अनुमान आधिकारिक APY चार्ट पर आधारित हैं। पेंशन की गारंटी भारत सरकार देती है (अटल पेंशन योजना)। ताज़ा नियम अपने बैंक से पुष्टि करें।",
+ lang:"English"}
+};
+
+let lang="en", mode="goal", age=25, slabIdx=2, daily=10, checks=[false,false,false,false];
+const $=(id)=>document.getElementById(id);
+const inr=(n)=>"₹"+Math.round(n).toLocaleString("en-IN");
+
+function render(){
+  const t=T[lang];
+  $("langBtn").textContent=t.lang;
+  $("tagline").textContent=t.tagline;
+  $("modeGoal").querySelector("span").textContent=t.modeGoal;
+  $("modeBudget").querySelector("span").textContent=t.modeBudget;
+  $("modeGoal").classList.toggle("on",mode==="goal");
+  $("modeBudget").classList.toggle("on",mode==="budget");
+  $("goalInputs").classList.toggle("hidden",mode!=="goal");
+  $("budgetInputs").classList.toggle("hidden",mode!=="budget");
+  $("ageLbl").textContent=t.yourAge;
+  $("ageVal").textContent=` ${age} ${t.years}`;
+  $("slabLbl").textContent=t.pensionGoal;
+  $("dailyLbl").textContent=t.dailySave;
+  $("dailyVal").textContent=` ₹${daily} ${t.perDay}`;
+
+  // slab buttons
+  const sb=$("slabBtns"); sb.innerHTML="";
+  SLABS.forEach((s,i)=>{
+    const b=document.createElement("button");
+    b.className="slab"+(i===slabIdx?" on":"");
+    b.textContent="₹"+s.toLocaleString("en-IN");
+    b.onclick=()=>{slabIdx=i;render();};
+    sb.appendChild(b);
+  });
+
+  // active slab
+  let activeIdx;
+  if(mode==="goal"){ activeIdx=slabIdx; $("budgetMsg").textContent=""; }
+  else{
+    const budget=daily*30; activeIdx=-1;
+    APY[age].forEach((c,i)=>{ if(c<=budget) activeIdx=i; });
+    $("budgetMsg").textContent = activeIdx>=0 ? t.budgetResult(daily) : t.budgetNone;
+  }
+
+  const show=activeIdx>=0;
+  $("resultBlock").classList.toggle("hidden",!show);
+  if(show){
+    const monthly=APY[age][activeIdx], slab=SLABS[activeIdx], corpus=CORPUS[activeIdx];
+    const yrs=60-age;
+    const totalIn=monthly*12*yrs;
+    const totalOut=slab*12*20+corpus;
+    const r=0.035/12,n=yrs*12;
+    const bankFV=monthly*((Math.pow(1+r,n)-1)/r);
+    const perDay=monthly/30;
+    const cups=Math.max(1,Math.round(perDay/CHAI));
+    const maxBar=Math.max(totalIn,totalOut);
+
+    $("resultTitle").textContent=t.resultTitle;
+    $("payVal").textContent=inr(monthly);
+    $("perMonth").textContent=t.perMonth;
+    $("till60").textContent=t.till60(yrs);
+    $("cups").textContent="☕".repeat(Math.min(cups,6));
+    $("chaiLine").textContent=`${t.thatsOnly} ${inr(perDay)} ${t.perDay} — ${t.chaiLine(cups)}`;
+    $("youGet").textContent=t.youGet;
+    $("slabVal").textContent=inr(slab);
+    $("pensionForLife").textContent=t.pensionForLife;
+    $("familyNote").innerHTML=t.familyNote(inr(corpus));
+    $("payoffTitle").textContent=t.payoffTitle;
+    $("totalInLbl").textContent=t.totalIn;
+    $("overLbl").textContent=t.over(yrs);
+    $("totalOutLbl").textContent=t.totalOut;
+    $("plusCorpus").textContent=t.plusCorpus;
+    $("barIn").style.width=(totalIn/maxBar*100)+"%";
+    $("barIn").textContent=inr(totalIn);
+    $("barOut").style.width=(totalOut/maxBar*100)+"%";
+    $("barOut").textContent=inr(totalOut);
+    $("multLine").textContent=t.timesBack((totalOut/totalIn).toFixed(1));
+    $("compareTitle").textContent=t.compareTitle;
+    $("mattressName").textContent=t.mattress; $("mattressNote").textContent=t.mattressNote;
+    $("mattressVal").textContent=inr(totalIn);
+    $("bankName").textContent=t.bank; $("bankNote").textContent=t.bankNote;
+    $("bankVal").textContent=inr(bankFV);
+    $("apyName").textContent=t.apy; $("apyNote").textContent=t.apyNote;
+    $("apyVal").textContent=inr(totalOut)+"+";
+  }
+
+  // eligibility
+  $("eligTitle").textContent=t.eligTitle;
+  $("eligIntro").textContent=t.eligIntro;
+  const cwrap=$("checks"); cwrap.innerHTML="";
+  t.checks.forEach((label,i)=>{
+    const l=document.createElement("label"); l.className="chk";
+    const c=document.createElement("input"); c.type="checkbox"; c.checked=checks[i];
+    c.onchange=()=>{checks[i]=!checks[i];render();};
+    l.appendChild(c); l.appendChild(document.createTextNode(label));
+    cwrap.appendChild(l);
+  });
+  const all=checks.every(Boolean);
+  $("verdict").className="verdict "+(all?"yes":"no");
+  $("verdict").textContent=all?t.eligibleYes:t.eligibleNo;
+  const st=$("steps"); st.classList.toggle("hidden",!all); st.innerHTML="";
+  t.steps.forEach(s=>{const li=document.createElement("li");li.textContent=s;st.appendChild(li);});
+
+  $("disclaimer").textContent=t.disclaimer;
+}
+
+$("langBtn").onclick=()=>{lang=lang==="en"?"hi":"en";render();};
+$("modeGoal").onclick=()=>{mode="goal";render();};
+$("modeBudget").onclick=()=>{mode="budget";render();};
+$("age").oninput=(e)=>{age=+e.target.value;render();};
+$("daily").oninput=(e)=>{daily=+e.target.value;render();};
+render();
+</script>
+</body>
+</html>
